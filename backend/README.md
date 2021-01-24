@@ -77,34 +77,35 @@ POST '/questions'
 POST 'questions/seach'
 POST 'quizzes'
 
-
 GET '/categories'
 - Fetches a list of categories, 
 - Request Arguments: None
 - Returns: A list of categories 
-[  "Science", 
-    "Art", 
-    "Geography", 
-    "History", 
-    "Entertainment", 
-    "Sports"
-]
+    [  
+      "Science", 
+      "Art", 
+      "Geography", 
+      "History", 
+      "Entertainment", 
+      "Sports"
+    ]
 
 GET '/questions'
 - Fetches a list of questions, number of total questions, 
 current category, categories including pagination (every 10 questions) 
 - Request Arguments: page number
-- Returns: dictionary includes 4 itmes below      
+- Returns: dictionary includes questions, total_questions, categories,
+            current_category.
+            questions is a list of questions. this is the pagination result. 
       {
-        'questions': a list of questions. this is the pagination result. 
-         each question is a dictionary:
-          {
+        'questions': 
+          [{
              "answer": "Apollo 13", 
             "category": 4, 
             "difficulty": 4, 
             "id": 2, 
             "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
-          }
+          },,,,]
         'total_questions': total number of questions
         'categories': a dictionary of categories. key is id.
         'cuurent_category': allways 'None'.
@@ -115,17 +116,18 @@ GET '/categories/<int:category_id>/questions'
 - example
   http://localhost:3000/categories/3/questions
 - Request Arguments: None
-- Returns dictionary includes 4 itmes below      
+- Returns dictionary includes questions, total_questions,
+            current_category.
+            questions is a list of questions. this is the pagination result.       
       {
-        'questions': a list of questions. this is the pagination result. 
-         each question is a dictionary:
+        'questions': 
           [{
             "answer": "Lake Victoria", 
             "category": 3, 
             "difficulty": 2, 
             "id": 13, 
             "question": "What is the largest lake in Africa?" 
-          },]
+          },,,,]
         'total_questions': total number of questions
         'cuurent_category': category id (integer).
       }
@@ -151,19 +153,21 @@ POST '/questions/seach'
 - Example
       curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm":"title"}'
 - Request Arguments: None
-- Returns: a dictionary includes 3 itmes below
-  {
-    "cuurent_category": allways None, 
-    "questions": a list of questions.
-        [{
-        "answer": "Maya Angelou", 
-        "category": 4, 
-        "difficulty": 2, 
-        "id": 5, 
-        "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
-        },] 
-    "total_questions": the number of quetions which match to the search term
-  }
+- Returns: a dictionary includes current_category, questions,
+           total_questions.
+           "questions" is a list of questions.
+        {
+          "cuurent_category": allways None, 
+          "questions": 
+              [{
+              "answer": "Maya Angelou", 
+              "category": 4, 
+              "difficulty": 2, 
+              "id": 5, 
+              "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+              },,,,,] 
+          "total_questions": the number of quetions which match to the search term
+        }
 
 POST '/quizzes'
 - get questions to play the quiz. 
@@ -173,15 +177,15 @@ POST '/quizzes'
     curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions":[20],"quiz_category":{"type":"Science","id":"0"}}'
 - Request Arguments: None
 - Returns: a dictionary of quesion like below
-    {
-    "question": {
-        "answer": "Alexander Fleming", 
-        "category": 1, 
-        "difficulty": 3, 
-        "id": 21, 
-        "question": "Who discovered penicillin?"
-        }, 
-    }
+        {
+        "question": {
+            "answer": "Alexander Fleming", 
+            "category": 1, 
+            "difficulty": 3, 
+            "id": 21, 
+            "question": "Who discovered penicillin?"
+            }, 
+        }
   
 ```
 
