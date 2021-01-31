@@ -115,7 +115,10 @@ def create_app(test_config=None):
     new_answer = body.get('answer', None)
     new_dificulity = body.get('difficulty', None)
     new_category = body.get('category', None)
-
+    if new_category == None:
+      pass
+    else:
+      new_category = str(int(new_category) + 1)
     try:
       question = Question(question=new_question, 
                           answer=new_answer, difficulty=new_dificulity,
@@ -206,10 +209,14 @@ def create_app(test_config=None):
       # make a list of question id in a selected catetory or all category
       ids = [q.id for q in questions] 
       # remove questions in previous questions from the list of questions above
-      for i in previous_questions:
-         ids.remove(i)
-      selected_id = random.choice(ids)
-      q = Question.query.get(selected_id).format()
+      for removed_qesutions in previous_questions:
+         ids.remove(removed_qesutions)
+      # If the the list of qeustions 'ids' is empty, return q = None 
+      if len(ids) == 0:
+        q = None
+      else:
+        selected_id = random.choice(ids)
+        q = Question.query.get(selected_id).format()
 
       return jsonify({'question': q})
 
