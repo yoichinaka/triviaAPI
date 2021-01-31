@@ -72,14 +72,14 @@ def create_app(test_config=None):
   def retrieve_questions():
     questiongs = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request, questiongs)
-    len_quetions = len(questiongs)
-    if len_quetions == 0:
+    len_questions = len(questiongs)
+    if len(current_questions) == 0:
       abort(404)
 
     return jsonify({'questions': current_questions,
-                    'total_questions': len_quetions,
+                    'total_questions': len_questions,
                     'categories': get_category_list(),
-                    'cuurent_category': None})
+                    'current_category': None})
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
@@ -113,7 +113,7 @@ def create_app(test_config=None):
     body = request.get_json()    
     new_question = body.get('question', None)
     new_answer = body.get('answer', None)
-    new_dificulity = body.get('difficulity', None)
+    new_dificulity = body.get('difficulty', None)
     new_category = body.get('category', None)
 
     try:
@@ -139,20 +139,22 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/search', methods=['POST'])
   def search_questions():
-    body = request.get_json()    
+    body = request.get_json()
+    if body == None:
+      abort(400)  
     search_term = body.get('searchTerm', None)
 
     try:
       questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
-      len_quetions=len(questions)
+      len_questions=len(questions)
       current_questions = paginate_questions(request, questions)
 
       return jsonify({'questions': current_questions,
-                      'total_questions': len_quetions,
-                      'cuurent_category': None})
+                      'total_questions': len_questions,
+                      'current_category': None})
 
     except:
-      abort(422)
+      abort(400)
 
   '''
   @TODO: 
@@ -172,7 +174,7 @@ def create_app(test_config=None):
 
     return jsonify({'questions': current_questions,
                     'total_questions': len_quetions,
-                    'cuurent_category': category_id})
+                    'current_category': category_id})
 
   '''
   @TODO: 
