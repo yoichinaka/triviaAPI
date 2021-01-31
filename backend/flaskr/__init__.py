@@ -23,12 +23,12 @@ def create_app(test_config=None):
   setup_db(app)
   
   '''
-  @TODO: Set up CORS. Allow '*' for origins. 
+  @DONE: Set up CORS. Allow '*' for origins. 
   Delete the sample route after completing the TODOs
   '''
   CORS(app)
   '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
+  @DONE: Use the after_request decorator to set Access-Control-Allow
   '''
   @app.after_request
   def after_request(response):
@@ -37,21 +37,31 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE')
     return response
   '''
-  @TODO: 
+  @DONE: 
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
+
+  def get_category_list():
+    categories = {}
+    for category in Category.query.all():
+        categories[category.id] = category.type
+    return categories
+
   @app.route('/categories')
   def retrive_categories():
-    categories = Category.query.all()
-    current_categories = [categories.format()["type"] for categories in categories]
+    categories = get_category_list()
     if len(categories) == 0:
       abort(404)
 
-    return jsonify({'categories': current_categories})
+    return jsonify({
+                    'categories': get_category_list(),
+                    })
 
+
+#    return jsonify({'categories': get_category_list()})
   '''
-  @TODO: 
+  @DONE: 
   Create an endpoint to handle GET requests for questions, 
   including pagination (every 10 questions). 
   This endpoint should return a list of questions, 
@@ -62,11 +72,7 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
-  def get_category_list():
-    categories = {}
-    for category in Category.query.all():
-        categories[category.id] = category.type
-    return categories
+
 
   @app.route('/questions')
   def retrieve_questions():
@@ -81,7 +87,7 @@ def create_app(test_config=None):
                     'categories': get_category_list(),
                     'current_category': None})
   '''
-  @TODO: 
+  @DONE: 
   Create an endpoint to DELETE question using a question ID. 
 
   TEST: When you click the trash icon next to a question, 
@@ -96,10 +102,10 @@ def create_app(test_config=None):
 
     question.delete()
 
-    return jsonify({})
+    return jsonify({'deleted_id': question_id})
 
   '''
-  @TODO: 
+  @DONE: 
   Create an endpoint to POST a new question, 
   which will require the question and answer text, 
   category, and difficulty score.
@@ -115,23 +121,21 @@ def create_app(test_config=None):
     new_answer = body.get('answer', None)
     new_dificulity = body.get('difficulty', None)
     new_category = body.get('category', None)
-    if new_category == None:
-      pass
-    else:
-      new_category = str(int(new_category) + 1)
+
     try:
       question = Question(question=new_question, 
                           answer=new_answer, difficulty=new_dificulity,
                           category=new_category)
       question.insert()
-
-      return jsonify({})
+      added_id = Question.query.filter(Question.question == new_question)\
+                  .one_or_none().format().get('id')
+      return jsonify({'added_id': added_id})
 
     except:
       abort(422)
 
   '''
-  @TODO: 
+  @DONE: 
   Create a POST endpoint to get questions based on a search term. 
   It should return any questions for whom the search term 
   is a substring of the question. 
@@ -160,7 +164,7 @@ def create_app(test_config=None):
       abort(400)
 
   '''
-  @TODO: 
+  @DONE: 
   Create a GET endpoint to get questions based on category. 
 
   TEST: In the "List" tab / main screen, clicking on one of the 
@@ -180,7 +184,7 @@ def create_app(test_config=None):
                     'current_category': category_id})
 
   '''
-  @TODO: 
+  @DONE: 
   Create a POST endpoint to get questions to play the quiz. 
   This endpoint should take category and previous question parameters 
   and return a random questions within the given category, 
@@ -194,8 +198,7 @@ def create_app(test_config=None):
   def retrieve_quizzes():
     body = request.get_json()
     previous_questions = body.get('previous_questions', None)
-    # quiz_category must be integer and start from one by frontend
-    quiz_category = int(body.get('quiz_category', None).get('id', None))+1
+    quiz_category = int(body.get('quiz_category', None).get('id', None))
     quiz_category_type = body.get('quiz_category', None).get('type' , None)
 
     #find questions inclueded in all categories or a selected category
@@ -225,7 +228,7 @@ def create_app(test_config=None):
 
 
   '''
-  @TODO: 
+  @DONE: 
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''

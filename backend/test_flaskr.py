@@ -146,12 +146,11 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_quizzes(self):
         # When client POST quizzes request, it return a question object randomly from a given category. 
-        # The returned category id must be plus one from input category id.
-        # In this case the input id is 0, so the returne id must be 1. 
+        
         res = self.client().post('/quizzes',
                                  json={
                                      "previous_questions":[20],
-                                     "quiz_category":{"type":"Science","id":"0"}
+                                     "quiz_category":{"type":"Science","id":"1"}
                                      }
                                 )
         data = json.loads(res.data)
